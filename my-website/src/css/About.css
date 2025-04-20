@@ -1,0 +1,48 @@
+/* About Section */
+#about {
+    padding: 10rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+#about h2 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    margin-bottom: 4rem;
+    color: var(--gray-900);
+    display: inline-block;
+    position: relative;
+}
+
+#about h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 6rem;
+    height: 3px;
+    background: var(--blue);
+}
+
+#about p {
+    font-size: 1.8rem;
+    line-height: 1.7;
+    display: flex;
+    text-align: justify;
+    max-width: 100%;
+    width: 100%;
+}
+
+.subheading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+    width: 100%;
+    text-align: center;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+}
