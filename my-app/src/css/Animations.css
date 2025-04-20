@@ -1,0 +1,145 @@
+/* Scroll Progress Bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent);
+    z-index: 101;
+    transition: width 0.1s;
+}
+
+/* Animations */
+.animate {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Fix for potential conflict between animation and hover */
+.animate:hover {
+    /* Override any transform set by the animation class */
+    transform: translateY(0);
+}
+
+/* Re-enable hover effects for specific animated elements */
+.animate.card:hover,
+.animate.skill-tag:hover,
+.animate.cert-item:hover,
+.animate.contact-item:hover,
+.animate.timeline-content:hover,
+.animate.project-card:hover {
+    transform: translateY(-12px) scale(1.04);
+}
+
+/* Shape explosion animation */
+@keyframes explodeShapes {
+    0% {
+        transform: scale(0) translate(0, 0);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) translate(var(--move-x), var(--move-y));
+        opacity: 0;
+    }
+}
+
+.shape.exploding {
+    animation: explodeShapes 3s forwards cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Animated Mouse */
+.animated-mouse {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 998;
+    box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+    opacity: 0;
+    transform: translate(0vh, 0vw);
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+
+.animated-mouse::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px var(--accent);
+}
+
+.animated-mouse.clicking {
+    transform: scale(0.8);
+}
+
+.animated-mouse.clicking::before {
+    animation: pulseClick 0.5s forwards;
+}
+
+@keyframes pulseClick {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Add animated shapes */
+.shape {
+    position: absolute;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+
+.shape.circle {
+    border-radius: 50%;
+    background: rgba(0, 195, 255, 0.6);
+    filter: blur(2px);
+}
+
+.shape.square {
+    border-radius: 4px;
+    background: rgba(0, 102, 255, 0.5);
+    transform: rotate(45deg);
+}
+
+.shape.triangle {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 26px solid rgba(0, 76, 190, 0.6);
+    background: transparent;
+}
+
+/* Shape animation states */
+.shape.visible {
+    opacity: 1;
+}
