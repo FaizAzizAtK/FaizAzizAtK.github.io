@@ -1,3 +1,7 @@
+# Portfolio Website - Faiz Aziz
+
+LinkedIn: https://www.linkedin.com/in/faiz-aziz-01524425a/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
