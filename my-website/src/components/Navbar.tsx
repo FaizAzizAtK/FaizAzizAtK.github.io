@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
         </div>
         
         <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-          {['about', 'education', 'experience', 'projects', 'skills', 'certifications', 'contact'].map((section, index) => (
+          {['about', 'experience', 'projects', 'education', 'skills', 'certifications', 'contact'].map((section, index) => (
             <li key={section}>
               <a 
                 href={`#${section}`} 
