@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import './BlogOverlay.css'
+// Essays. Plain data (no JSX) so vite.config.js can read it at build time
+// and write a static page with its own title and preview tags per essay.
 
 const POSTS = {
   'agentic-shift': {
@@ -97,7 +97,7 @@ const POSTS = {
       },
       {
         type: 'p',
-        text: "RAG — Retrieval-Augmented Generation — is one of the most practical patterns in production AI. Instead of relying purely on what an LLM was trained on, you give it access to your documents at query time. A question comes in, your system searches a knowledge base, pulls the relevant chunks, and passes them to the model alongside the question. The model answers from retrieved context, not memorised patterns.",
+        text: "RAG (Retrieval-Augmented Generation) is one of the most practical patterns in production AI. Instead of relying purely on what an LLM was trained on, you give it access to your documents at query time. A question comes in, your system searches a knowledge base, pulls the relevant chunks, and passes them to the model alongside the question. The model answers from retrieved context, not memorised patterns.",
       },
       {
         type: 'p',
@@ -125,7 +125,7 @@ const POSTS = {
       },
       {
         type: 'p',
-        text: "So when a query is specific but the document is dense, you get a predictable failure: the system retrieves chunks that are on-topic but wrong — from the right document but the wrong section, from an outdated version, or subtly contradicting what was actually asked. The model receives this confused context and either fabricates a confident answer or hedges uselessly. Both are bad in production.",
+        text: "So when a query is specific but the document is dense, you get a predictable failure: the system retrieves chunks that are on-topic but wrong: from the right document but the wrong section, from an outdated version, or subtly contradicting what was actually asked. The model receives this confused context and either fabricates a confident answer or hedges uselessly. Both are bad in production.",
       },
       {
         type: 'h2',
@@ -141,7 +141,7 @@ const POSTS = {
       },
       {
         type: 'p',
-        text: "In practice: a query hits the high-level index first. The system identifies which sections or documents are most relevant — not which chunks. Then it does a targeted search within those sections only. Instead of searching 10,000 chunks and grabbing 5 from across the entire corpus, you search 50 section summaries, pick the 2 most relevant, and retrieve the best 5 chunks from within those 2 sections.",
+        text: "In practice: a query hits the high-level index first. The system identifies which sections or documents are most relevant, not which chunks. Then it does a targeted search within those sections only. Instead of searching 10,000 chunks and grabbing 5 from across the entire corpus, you search 50 section summaries, pick the 2 most relevant, and retrieve the best 5 chunks from within those 2 sections.",
       },
       {
         type: 'p',
@@ -165,7 +165,7 @@ const POSTS = {
       },
       {
         type: 'p',
-        text: "So — is RAG that simple? For demos and prototypes, yes. For agents that have to be right, the architecture of how they retrieve matters as much as the model powering them. HRAG is what that looks like.",
+        text: "So, is RAG that simple? For demos and prototypes, yes. For agents that have to be right, the architecture of how they retrieve matters as much as the model powering them. HRAG is what that looks like.",
       },
     ],
   },
@@ -263,56 +263,45 @@ const POSTS = {
   },
 }
 
-export default function BlogOverlay({ blogId, onClose }) {
-  const post = POSTS[blogId]
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
+// Curly quotes and apostrophes, so the source text can stay plain ASCII.
+const smart = (t) => t.replace(/(^|[\s(“])'/g, '$1‘').replace(/'/g, '’').replace(/(^|[\s(])"/g, '$1“').replace(/"/g, '”')
+const typeset = (body) => body.map((b) => ({ ...b, text: smart(b.text) }))
 
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+const words = (body) => body.reduce((n, b) => n + b.text.split(/\s+/).length, 0)
+const minutes = (body) => Math.max(1, Math.round(words(body) / 230))
 
-  if (!post) return null
+export const ESSAYS = [
+  {
+    slug: 'is-rag-that-simple',
+    title: 'Is RAG That Simple?',
+    date: '2026-03',
+    dateLabel: 'Mar 2026',
+    dek: 'Flat RAG searches everything and hopes. Hierarchical RAG reads the contents page first, then the chapter. Why that matters once an agent has to act on what it retrieves.',
+    pigments: ['prussian', 'indigo'],
+    figure: 'hrag',
+    body: typeset(POSTS['hrag'].body),
+  },
+  {
+    slug: 'your-context-is-rotting',
+    title: 'Your Context Is Rotting',
+    date: '2026-02',
+    dateLabel: 'Feb 2026',
+    dek: 'Most teams have prompting figured out. What breaks long-running agents is the context window slowly filling with stale tool results and old reasoning.',
+    pigments: ['indigo', 'payne'],
+    figure: 'context',
+    body: typeset(POSTS['prompting-interface'].body),
+  },
+  {
+    slug: 'the-agentic-shift',
+    title: 'The Agentic Shift',
+    date: '2026-01',
+    dateLabel: 'Jan 2026',
+    dek: 'The move from co-pilot to agent is real. What slows it down inside enterprises is trust, scope and evals, and none of that shows up in a demo.',
+    pigments: ['ultramarine', 'phthalo'],
+    figure: 'loop',
+    body: typeset(POSTS['agentic-shift'].body),
+  },
+].map((e) => ({ ...e, minutes: minutes(e.body) }))
 
-  return (
-    <div className="blog-overlay" role="dialog" aria-modal="true" aria-label={post.title}>
-      <div className="blog-overlay__bar">
-        <span className="blog-overlay__back" onClick={onClose}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Back
-        </span>
-        <span className="blog-overlay__meta">{post.date} · {post.readTime}</span>
-        <button className="blog-overlay__close" onClick={onClose} aria-label="Close article">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-        </button>
-      </div>
-
-      <div className="blog-overlay__scroll">
-        <article className="blog-overlay__article">
-          <header className="blog-overlay__header">
-            <span className="blog-overlay__cat">Essay</span>
-            <h1 className="blog-overlay__title">{post.title}</h1>
-          </header>
-
-          <div className="blog-overlay__body">
-            {post.body.map((block, i) => {
-              if (block.type === 'lead') return <p key={i} className="blog-overlay__lead">{block.text}</p>
-              if (block.type === 'h2')   return <h2 key={i} className="blog-overlay__h2">{block.text}</h2>
-              if (block.type === 'p')    return <p key={i} className="blog-overlay__p">{block.text}</p>
-              return null
-            })}
-          </div>
-        </article>
-      </div>
-    </div>
-  )
-}
+export const essayBySlug = (slug) => ESSAYS.find((e) => e.slug === slug)

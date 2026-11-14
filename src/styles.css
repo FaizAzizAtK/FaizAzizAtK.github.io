@@ -1,0 +1,279 @@
+/* One sheet of paper and whatever pigment reaches it. Writing marked as reveal
+   is set in the paper's exact colour, so colour spreading behind it is the only
+   thing that can make it visible. Without the water it falls back to ink. */
+:root {
+  --paper: #ffffff;
+  --ink: #14193a;
+  --ink-2: #4b5170;
+  --rule: #dcdbe2;
+  --sans: 'Mona Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --m: clamp(20px, 6.4vw, 104px);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--paper); -webkit-text-size-adjust: 100%; scroll-padding-top: 0; }
+body {
+  color: var(--ink);
+  font: 400 18px/1.5 var(--sans);
+  font-stretch: 104%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--ink); color: var(--paper); }
+
+.skip { position: fixed; left: 12px; top: -80px; z-index: 30; background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 8px; }
+.skip:focus { top: 12px; }
+
+.water-canvas { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh; display: block; z-index: -1; }
+
+/* Nav: scraps of paper */
+.nav { position: fixed; z-index: 20; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: flex-start; padding: 16px clamp(14px, 2vw, 28px); pointer-events: none; }
+.nav > *, .nav__right > * { pointer-events: auto; }
+.nav__right { position: relative; display: flex; gap: 8px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 15px; border-radius: 20px;
+  background: var(--paper); color: var(--ink);
+  font-size: 15px; font-weight: 500; text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(20, 25, 58, 0.08), 0 6px 20px rgba(20, 25, 58, 0.1);
+}
+.tag__n { color: var(--ink-2); font-weight: 400; font-variant-numeric: tabular-nums; }
+.panel {
+  position: absolute; right: 0; top: 48px; width: min(330px, calc(100vw - 28px));
+  background: var(--paper); color: var(--ink); border-radius: 18px; padding: 10px;
+  box-shadow: 0 2px 4px rgba(20, 25, 58, 0.08), 0 18px 50px rgba(20, 25, 58, 0.2);
+}
+.panel ol { list-style: none; counter-reset: q; }
+.panel li { counter-increment: q; }
+.panel li a { display: flex; gap: 12px; padding: 9px 10px; border-radius: 10px; text-decoration: none; font-size: 16px; }
+.panel li a::before { content: counter(q); color: var(--ink-2); width: 1.4em; text-align: right; font-variant-numeric: tabular-nums; }
+.panel li a:hover { background: #eeeef3; }
+.panel__links { display: flex; gap: 14px; padding: 10px 10px 6px; font-size: 15px; border-top: 1px solid var(--rule); margin-top: 6px; }
+
+/* Sheets: each one pins for as long as its colour takes to spread */
+.sheet { position: relative; height: 145vh; height: 145lvh; }
+.pin { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: clip; }
+.pin__inner { height: 100%; padding: clamp(88px, 15vh, 150px) var(--m) clamp(40px, 9vh, 96px); display: flex; flex-direction: column; }
+
+.water .pin, .water .essay { color: var(--paper); }
+.water .essay { --ink: #ffffff; --ink-2: #eceef6; --rule: rgba(255, 255, 255, 0.3); }
+
+.hero__title { font-weight: 300; font-size: clamp(2.4rem, min(5.1vw, 9.2vh), 5.6rem); line-height: 1.04; letter-spacing: -0.027em; max-width: 12.4em; margin-top: auto; text-wrap: balance; }
+.hero__title strong { display: block; font-weight: 500; }
+.hero__who { margin-top: 24px; font-size: clamp(1.08rem, 1.5vw, 1.45rem); line-height: 1.4; max-width: 31em; }
+.hero__skills { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 18px; font-weight: 600; font-size: clamp(1rem, 1.25vw, 1.2rem); max-width: 40em; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 18px; font-weight: 600; font-size: clamp(1.02rem, 1.25vw, 1.2rem); }
+.hero__cue { margin-top: auto; padding-top: 20px; font-size: 1rem; }
+.sheet--hero .pin__inner { position: relative; z-index: 1; max-width: 60%; }
+
+/* The question is the prompt; the answer is what a reader came for. */
+.q { font-weight: 400; font-size: clamp(1.3rem, min(2.1vw, 3.6vh), 2.1rem); line-height: 1.16; letter-spacing: -0.012em; max-width: 24em; }
+.answers { flex: 1; margin-top: clamp(16px, 3vh, 36px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 33em); grid-template-rows: 1fr auto auto; gap: 14px clamp(24px, 5vw, 80px); }
+.block { grid-column: 2; }
+.block--lead, .block--num, .block--statement { grid-column: 1 / -1; align-self: center; }
+.block--lead p { font-weight: 300; font-size: clamp(2.6rem, min(7.4vw, 13.4vh), 8rem); line-height: 1.02; letter-spacing: -0.032em; max-width: 13em; text-wrap: balance; }
+.block--statement p { font-weight: 300; font-size: clamp(1.9rem, min(4.5vw, 8.2vh), 5rem); line-height: 1.08; letter-spacing: -0.026em; max-width: 19em; text-wrap: balance; }
+.block--num p { font-weight: 200; font-size: clamp(5.5rem, min(23vw, 38vh), 24rem); line-height: 0.96; letter-spacing: -0.05em; }
+.block--body p { font-size: clamp(1.15rem, 1.6vw, 1.6rem); line-height: 1.38; }
+.block--note p { font-size: clamp(1.02rem, 1.25vw, 1.25rem); line-height: 1.45; }
+.block__links { display: flex; gap: 18px; margin-top: 8px; font-weight: 600; }
+
+/* A little variety in where the weight sits, sheet to sheet */
+.sheet--flip .block--lead, .sheet--flip .block--num { justify-self: end; text-align: right; }
+.sheet--flip .block--lead p { margin-left: auto; }
+.sheet--flip .block--body, .sheet--flip .block--note { grid-column: 1; }
+.hint { grid-column: 1; grid-row: 3; align-self: end; font-size: clamp(0.98rem, 1.1vw, 1.1rem); font-weight: 500; }
+
+/* The film sheet: writing on the left, the film itself on the right */
+.sheet--film .answers { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto 1fr; align-items: start; }
+.sheet--film .block { grid-column: 1; }
+.sheet--film .block--lead { grid-row: 1; align-self: end; margin-bottom: clamp(10px, 2.4vh, 28px); }
+.sheet--film .block--lead p { font-size: clamp(2.4rem, min(4.8vw, 9vh), 5.2rem); }
+.film { grid-column: 2; grid-row: 1 / -1; align-self: center; margin: 0; }
+.film video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; background: #0b0f2e; box-shadow: 0 2px 4px rgba(10, 12, 40, 0.2), 0 24px 60px rgba(10, 12, 40, 0.35); }
+.water .film { opacity: var(--in, 0); }
+
+.essay-list { grid-column: 2; list-style: none; }
+.essay-list li + li { margin-top: 18px; }
+.essay-list a { display: block; text-decoration: none; }
+.essay-list a:hover .essay-list__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+.essay-list__title { display: block; font-weight: 300; font-size: clamp(1.5rem, 2.5vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; }
+.essay-list__dek { display: block; margin-top: 4px; font-size: clamp(0.98rem, 1.1vw, 1.1rem); line-height: 1.4; }
+
+/* Line drawings traced from the photographs, the face left empty on purpose. They
+   take the writing's colour, so the paint reveals them, and each stroke draws
+   itself as --in runs from 0 to 1. --px is the size of one CSS pixel in drawing units. */
+.drawing { position: absolute; margin: 0; pointer-events: none; }
+.drawing__svg { display: block; width: 100%; height: auto; overflow: visible; fill: none; stroke: currentColor; stroke-width: calc(var(--px, 0.7) * 1.15px); stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 3; }
+.drawing__svg .is-heavy { stroke-width: calc(var(--px, 0.7) * 1.9px); }
+.water .drawing__svg path {
+  --t: calc((var(--in, 0) * var(--n) - var(--i)) / var(--w));
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: calc(1 - clamp(0, var(--t), 1));
+}
+.drawing--podium { right: calc(var(--m) * 0.7); bottom: -2px; width: min(66vh, 39vw); }
+/* the caption sits on the front of the lectern, like a sign */
+.drawing figcaption { position: absolute; left: 17%; top: 60%; width: 33%; font-size: clamp(0.85rem, 1vw, 0.98rem); line-height: 1.3; }
+
+/* Record: the one quiet sheet, plain ink on paper */
+.record { background: var(--paper); position: relative; padding: clamp(96px, 16vh, 170px) var(--m) clamp(80px, 13vh, 150px); }
+.q--ink { color: var(--ink-2); }
+.record__head { margin-top: 10px; }
+.record__name { font-weight: 300; font-size: clamp(2.8rem, min(6vw, 11vh), 6rem); line-height: 1.02; letter-spacing: -0.03em; }
+.record__summary { margin-top: 10px; font-size: clamp(1.1rem, 1.6vw, 1.5rem); }
+.record__contact { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 10px; font-weight: 500; }
+.record__actions { margin-top: 18px; font-weight: 600; }
+.record__actions button { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; font-weight: 600; }
+.record__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px clamp(32px, 6vw, 96px); margin-top: clamp(40px, 7vh, 76px); }
+.record__block h3 { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
+.record__block ul { list-style: none; }
+.record__block li { display: grid; grid-template-columns: 5.2em 1fr auto; gap: 16px; padding: 12px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+.record__when, .record__where { color: var(--ink-2); font-size: 0.94rem; font-variant-numeric: tabular-nums; }
+.record__what { font-weight: 500; }
+.record__what small { display: block; font-size: 0.94rem; font-weight: 400; color: var(--ink-2); margin-top: 1px; }
+.record__block dl > div { display: grid; grid-template-columns: 6.6em 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.record__block dt { color: var(--ink-2); font-size: 0.94rem; }
+.record__block dd { font-size: 0.98rem; }
+
+/* The close */
+.q--end { font-weight: 300; font-size: clamp(2.5rem, min(6.4vw, 11.6vh), 7rem); line-height: 1.03; letter-spacing: -0.03em; max-width: 12em; margin-top: auto; }
+.end__bio { margin-top: clamp(16px, 3vh, 30px); max-width: 36em; font-size: clamp(1.1rem, 1.5vw, 1.45rem); line-height: 1.4; }
+.end__row { margin-top: clamp(20px, 4vh, 40px); }
+.end__email { font-weight: 300; font-size: clamp(1.45rem, 3.3vw, 3.2rem); letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.end__links { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 16px; font-weight: 500; }
+.end__colophon { margin-top: auto; padding-top: 28px; max-width: 34em; font-size: 0.98rem; }
+
+/* Essay pages */
+.essay__head { position: relative; }
+.essay__head-inner { min-height: 74vh; min-height: 74lvh; padding: clamp(96px, 16vh, 150px) var(--m) clamp(40px, 8vh, 80px); display: flex; flex-direction: column; }
+.essay__back { font-weight: 500; }
+.essay__title { font-weight: 300; font-size: clamp(2.8rem, min(7vw, 13vh), 7.4rem); line-height: 1.02; letter-spacing: -0.03em; margin-top: auto; max-width: 11em; text-wrap: balance; }
+.essay__dek { margin-top: 22px; max-width: 32em; font-size: clamp(1.15rem, 1.8vw, 1.6rem); line-height: 1.32; }
+.essay__meta { margin-top: 18px; font-weight: 500; }
+.essay__body { position: relative; padding: clamp(32px, 6vh, 72px) max(var(--m), calc(50vw - 21em)) clamp(56px, 10vh, 110px); }
+.essay__body p { font-size: 1.2rem; line-height: 1.6; }
+.essay__body p + p { margin-top: 1em; }
+.essay__body .essay__lead { font-size: 1.55rem; line-height: 1.34; font-weight: 300; margin-bottom: 1.3em; }
+.essay__body h2 { font-weight: 500; font-size: 1.55rem; letter-spacing: -0.012em; line-height: 1.15; margin: 2em 0 0.7em; }
+.essay__fig { margin-top: 56px; }
+.essay__fig figcaption { color: var(--ink-2); margin-top: 12px; font-size: 0.95rem; }
+.essay__foot { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; padding: 0 var(--m) 96px; }
+.essay__foot h2 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+.essay__foot ul { list-style: none; }
+.essay__foot li { padding: 10px 0; border-top: 1px solid var(--rule); font-size: 1.15rem; }
+.essay__share { display: flex; gap: 18px; margin-top: 10px; font-weight: 500; }
+.essay__share button { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+
+.fig { display: block; width: 100%; height: auto; overflow: visible; }
+.fig text { font-family: var(--sans); }
+.fig .t { font-size: 12px; fill: var(--ink-2); }
+.fig .t-strong { font-size: 13px; font-weight: 600; fill: var(--ink); }
+.fig .t-inv { font-size: 12px; font-weight: 600; fill: var(--paper); }
+.fig .box { fill: none; stroke: var(--ink); }
+.fig .box--paper { fill: var(--paper); }
+.fig .fill-red { fill: var(--ink); }
+.fig .stroke, .fig .stroke * { stroke: var(--ink); fill: none; }
+.fig .rule { stroke: var(--rule); }
+.fig .limit { stroke: var(--ink); stroke-dasharray: 4 4; }
+.fig .ring { fill: none; stroke: var(--ink); }
+.fig .dot { fill: #b9bbcb; }
+.fig .dot-red { fill: var(--ink); }
+.fig .ctx-block { fill: var(--ink-2); }
+.fig .traveller { fill: var(--ink); }
+.water .essay .fig .box--paper { fill: rgba(10, 12, 40, 0.55); }
+.water .essay .fig .t-inv { fill: #14193a; }
+.water .essay .fig .dot { fill: rgba(255, 255, 255, 0.45); }
+.water .essay .fig .ctx-block { fill: #ffffff; }
+
+.notfound { min-height: 80vh; padding: 20vh var(--m); }
+.notfound h1 { font-weight: 300; font-size: clamp(2.6rem, 7vw, 6rem); letter-spacing: -0.03em; }
+
+/* laptops with a lot of browser toolbar: everything in the hero still has to fit */
+@media (min-width: 761px) and (max-height: 800px) {
+  .sheet--hero .pin__inner { padding-top: 74px; padding-bottom: 22px; }
+  .hero__who { margin-top: 14px; }
+  .hero__skills { margin-top: 12px; }
+  .hero__actions { margin-top: 12px; }
+  .hero__cue { padding-top: 12px; }
+}
+
+/* the buttons must always fit on one line */
+@media (max-width: 460px) {
+  .tag__n { display: none; }
+  .nav { padding-inline: 10px; }
+  .nav__right { gap: 6px; }
+  .tag { padding-inline: 11px; font-size: 14px; }
+}
+
+@media (max-width: 760px) and (max-height: 720px) {
+  .sheet--film .block--note { display: none; }
+}
+@media (max-width: 760px) and (max-height: 640px) {
+  .essay-list__dek { display: none; }
+}
+
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .answers { flex: none; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; margin-top: clamp(10px, 2.4vh, 26px); }
+  .block, .essay-list { grid-column: 1; }
+  .sheet--flip .block--lead, .sheet--flip .block--num { justify-self: start; text-align: left; }
+  .sheet--flip .block--body, .sheet--flip .block--note { grid-column: 1; }
+  .q { font-size: 1.2rem; }
+  .block--lead p { font-size: clamp(2.3rem, 11.6vw, 3.4rem); }
+  .block--statement p { font-size: clamp(1.6rem, 7.4vw, 2.3rem); }
+  .block--num p { font-size: clamp(5rem, 31vw, 9rem); }
+  .hint { grid-row: auto; }
+  .sheet--film .answers { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .sheet--film .block--lead { grid-row: auto; margin-bottom: 0; }
+  .film { grid-column: 1; grid-row: 2; }
+  .hero__title { font-size: clamp(2rem, 9.4vw, 2.9rem); margin-top: 0; }
+  .sheet--hero .pin__inner { max-width: none; }
+  .hero__who { margin-top: 14px; font-size: 1.02rem; }
+  .hero__skills { margin-top: 12px; gap: 2px 14px; font-size: 0.98rem; }
+  .hero__actions { margin-top: 12px; }
+  .hero__cue { display: none; }
+  /* on a phone the writing keeps its room and a drawing takes what is left, so they
+     can never collide, whatever the address bar is doing */
+  .sheet--hero .pin { display: flex; flex-direction: column; }
+  .sheet--hero .pin__inner { height: auto; flex: none; max-width: none; padding-bottom: 6px; }
+  .drawing { position: relative; flex: 1 1 0; min-height: 0; right: auto; bottom: auto; width: auto; container-type: size; }
+  .drawing__svg { position: absolute; right: 0; bottom: -2px; width: auto; height: 100%; max-width: 100%; }
+  @container (max-height: 130px) { .drawing__svg { display: none; } }
+  .drawing figcaption { display: none; }
+  /* diagrams keep a readable size and scroll sideways */
+  .fig-scroll { overflow-x: auto; margin-inline: calc(-1 * var(--m)); padding-inline: var(--m); scrollbar-width: none; }
+  .fig-scroll::-webkit-scrollbar { display: none; }
+  .fig-scroll .fig { min-width: 620px; }
+  .tag--contact { display: none; }
+  .record__grid, .essay__foot { grid-template-columns: minmax(0, 1fr); }
+  .record__block li { grid-template-columns: 4.4em 1fr; }
+  .record__where { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+@media (forced-colors: active), (prefers-contrast: more) {
+  .water .pin, .water .essay { color: var(--ink); --ink: #14193a; --ink-2: #4b5170; --rule: #dcdbe2; }
+  .water-canvas { display: none; }
+}
+@media print {
+  @page { margin: 14mm 15mm; }
+  html, body { background: #fff; color: #000; font-size: 10pt; }
+  .water-canvas, .nav, .skip, .sheet, .q--ink, .record__actions { display: none !important; }
+  .water .essay { color: #000; --ink: #000; --ink-2: #333; --rule: #ccc; }
+  .record { padding: 0; }
+  .record__name { font-size: 24pt; font-weight: 400; }
+  .record__summary { font-size: 11pt; margin-top: 2pt; }
+  .record__contact { margin-top: 2pt; font-size: 10pt; }
+  .record__contact a { text-decoration: none; }
+  .record__grid { margin-top: 14pt; gap: 14pt 24pt; }
+  .record__block h3 { font-size: 10.5pt; margin-bottom: 3pt; }
+  .record__block li, .record__block dl > div { padding: 3.5pt 0; break-inside: avoid; }
+  .record__when, .record__where, .record__what small, .record__block dt, .record__block dd { font-size: 9pt; color: #333; }
+}

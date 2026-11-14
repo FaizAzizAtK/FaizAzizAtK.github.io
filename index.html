@@ -1,14 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fafafa" />
-    <title>Faiz Aziz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Faiz Aziz, AI agents for places where being wrong is expensive</title>
+    <script>
+      // Paper-coloured writing only makes sense once water is really running.
+      (function () {
+        var c = document.createElement("canvas").getContext("webgl2")
+        if (!c || !(c.getExtension("EXT_color_buffer_float") || c.getExtension("EXT_color_buffer_half_float"))) return
+        document.documentElement.classList.add("water")
+        setTimeout(function () { if (!window.__waterOK) document.documentElement.classList.remove("water") }, 2200)
+      })()
+    </script>
+    <meta name="description" content="Faiz Aziz is a Data &amp; AI Delivery Consultant at IBM Expert Labs in London, building agentic and voice AI for banks, the public sector and many other industries." />
+    <meta name="author" content="Faiz Aziz" />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Faiz Aziz" />
+    <meta property="og:title" content="Faiz Aziz, AI agents for places where being wrong is expensive" />
+    <meta property="og:description" content="Data &amp; AI Delivery Consultant at IBM Expert Labs, London. Agentic AI, voice agents and AI governance, from first workshop to production." />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@100..125,200..700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Faiz Aziz",
+        "jobTitle": "Data & AI Delivery Consultant",
+        "worksFor": { "@type": "Organization", "name": "IBM Expert Labs" },
+        "address": { "@type": "PostalAddress", "addressLocality": "London", "addressCountry": "GB" },
+        "alumniOf": "Queen Mary University of London",
+        "url": "%SITE_URL%/",
+        "sameAs": ["https://www.linkedin.com/in/faiz-aziz-01524425a/", "https://github.com/FaizAzizAtK"]
+      }
+    </script>
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Skip to content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
