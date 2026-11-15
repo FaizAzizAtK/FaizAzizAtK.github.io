@@ -1,57 +1,180 @@
-import { forwardRef } from 'react'
+import { useEffect } from 'react'
 import { Link } from '../router'
-import { person, hero, questions, record, ending } from '../content/site'
+import { person, hero, belief, work, about, record, contact } from '../content/site'
 import { ESSAYS } from '../content/essays'
-import { PODIUM } from '../content/drawings'
-import Drawing from './Drawing'
+import { startMotion } from '../motion'
 
 const BASE = import.meta.env.BASE_URL
 
-const Block = forwardRef(function Block({ b, i }, ref) {
-  const cls = `block block--${b.kind}`
+function Hero() {
+  const cut = (w) => `${BASE}img/faiz-cross-${w}.webp`
   return (
-    <div className={cls} data-block={i} ref={ref}>
-      <p>{b.text}</p>
-      {b.link && <p className="block__links"><a href={b.link.url} target="_blank" rel="noopener noreferrer">{b.link.label} ↗</a></p>}
-      {b.links && (
-        <p className="block__links">
-          {b.links.map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
+    <section className="hero" id="top" data-scroll="leave" data-hero>
+      {/* two flat fields, one hard seam, Faiz standing on it */}
+      <div className="hero__field hero__field--a" aria-hidden="true" />
+      <div className="hero__field hero__field--b" aria-hidden="true" />
+
+      <h1 className="hero__name">
+        <span className="hero__first">{person.first}</span>{' '}
+        <span className="hero__last">{person.last}</span>
+      </h1>
+
+      <figure className="hero__person">
+        <img
+          src={cut(1000)}
+          srcSet={`${cut(640)} 640w, ${cut(1000)} 1000w, ${cut(1800)} 1800w`}
+          sizes="(max-width: 760px) 70vw, 40vw"
+          width="1800"
+          height="2673"
+          alt="Faiz Aziz, smiling, arms crossed, in round wire glasses and a black long-sleeve T-shirt"
+          fetchpriority="high"
+        />
+      </figure>
+
+      <div className="hero__meta">
+        <p className="hero__line" data-reveal style={{ '--d': '700ms' }}>{hero.line}</p>
+        <p className="hero__who" data-reveal style={{ '--d': '800ms' }}>{hero.who}</p>
+      </div>
+      <div className="hero__side">
+        <p className="hero__honour" data-reveal style={{ '--d': '850ms' }}>
+          <span>{hero.honour}</span>
+          <small>{hero.honourNote}</small>
+        </p>
+        <ul className="hero__skills" aria-label="Expertise" data-reveal style={{ '--d': '900ms' }}>
+          {hero.skills.map((s) => <li key={s}>{s}</li>)}
+        </ul>
+        <Link to="#work" className="hero__cue" data-reveal style={{ '--d': '1000ms' }}>
+          <span>Selected work</span>
+          <span className="hero__cue-arrow" aria-hidden="true">↓</span>
+        </Link>
+      </div>
+    </section>
+  )
+}
+
+function Belief() {
+  return (
+    <section className="belief on-ox" aria-labelledby="belief-label">
+      <div className="belief__inner">
+        <p className="label" id="belief-label">{belief.label}</p>
+        <p className="belief__text" data-words>
+          {belief.text.split(' ').map((w, i) => <span className="w" key={i}>{w} </span>)}
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function ChapterText({ c }) {
+  return (
+    <div className="chapter__text">
+      <p className="label" data-reveal>{c.kicker}</p>
+      <h3 className="chapter__title" data-reveal style={{ '--d': '80ms' }}>{c.title}</h3>
+      <p className="chapter__body" data-reveal style={{ '--d': '160ms' }}>{c.body}</p>
+      {c.note && <p className="chapter__note" data-reveal style={{ '--d': '240ms' }}>{c.note}</p>}
+      {c.links && (
+        <p className="links" data-reveal style={{ '--d': '300ms' }}>
+          {c.links.map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <span aria-hidden="true">↗</span></a>)}
         </p>
       )}
     </div>
   )
-})
+}
 
-function Question({ c }) {
-  const cls = ['sheet', `sheet--${c.id}`, c.layout && `sheet--${c.layout}`, c.paper && 'sheet--paper'].filter(Boolean).join(' ')
+// The lead chapter is a full-height split, like the hero: photograph left, story right.
+function Feature({ c }) {
   return (
-    <section className={cls} id={c.id} data-sheet aria-labelledby={`${c.id}-q`}>
-      <div className="pin" data-pin>
-        <div className="pin__inner">
-          <h2 className="q" id={`${c.id}-q`} data-q>{c.q}</h2>
-          <div className="answers">
-            {c.blocks.map((b, i) => <Block key={i} b={b} i={i} />)}
-            {c.film && (
-              <figure className="film" data-film>
-                <video controls playsInline preload="none" poster={c.film.poster} aria-label={c.film.label}>
-                  <source src={c.film.src} type="video/mp4" />
-                </video>
-              </figure>
-            )}
-            {c.hint && <p className="hint" data-hint>{c.hint}</p>}
-            {c.essays && (
-              <ol className="essay-list" data-essays>
-                {ESSAYS.map((e) => (
-                  <li key={e.slug} data-essay>
-                    <Link to={`writing/${e.slug}`}>
-                      <span className="essay-list__title">{e.title}</span>
-                      <span className="essay-list__dek">{e.dek}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </div>
+    <article className="feature" id={c.id} data-scroll>
+      <figure className="feature__photo" data-reveal>
+        <img
+          src={`${BASE}${c.photo.src}`}
+          srcSet={c.photo.srcSet.split(', ').map((x) => BASE + x).join(', ')}
+          sizes="(max-width: 760px) 80vw, 460px"
+          width={c.photo.w}
+          height={c.photo.h}
+          alt={c.photo.alt}
+          loading="lazy"
+        />
+      </figure>
+      <div className="feature__side">
+        <p className="feature__word" data-reveal>{c.figure}</p>
+        <ChapterText c={c} />
+        {c.film && (
+          <figure className="chapter__film" data-reveal style={{ '--d': '200ms' }}>
+            <video controls playsInline preload="none" poster={c.film.poster} aria-label={c.film.label}>
+              <source src={c.film.src} type="video/mp4" />
+            </video>
+            <figcaption>{c.film.label}</figcaption>
+          </figure>
+        )}
+      </div>
+    </article>
+  )
+}
+
+function Chapter({ c }) {
+  if (c.photo) return <Feature c={c} />
+  const n = c.count
+  return (
+    <article className="chapter" id={c.id} data-scroll>
+      <div className="chapter__figure">
+        {n ? (
+          <span aria-hidden="true" data-count={n.to} data-decimals={n.decimals} data-prefix={n.prefix || ''} data-suffix={n.suffix || ''}>{c.figure}</span>
+        ) : <span className="chapter__word">{c.figure}</span>}
+      </div>
+      <ChapterText c={c} />
+    </article>
+  )
+}
+
+function Work() {
+  return (
+    <section className="work" id="work" aria-labelledby="work-h">
+      <header className="section-head">
+        <p className="label">Selected work</p>
+        <h2 className="section-title" id="work-h" data-reveal>What I’ve <em>shipped</em>.</h2>
+      </header>
+      {work.map((c) => <Chapter key={c.id} c={c} />)}
+    </section>
+  )
+}
+
+function Writing() {
+  return (
+    <section className="writing" id="writing" aria-labelledby="writing-h">
+      <header className="section-head">
+        <p className="label">Writing</p>
+        <h2 className="section-title" id="writing-h" data-reveal>What I <em>think</em>.</h2>
+      </header>
+      <ol className="essays">
+        {ESSAYS.map((e, i) => (
+          <li key={e.slug} data-reveal style={{ '--d': `${i * 90}ms` }}>
+            <Link to={`writing/${e.slug}`} className="essay-row">
+              <span className="essay-row__date">{e.dateLabel}</span>
+              <span className="essay-row__title">{e.title}</span>
+              <span className="essay-row__dek">{e.dek}</span>
+              <span className="essay-row__go" aria-hidden="true">→</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function About() {
+  return (
+    <section className="about split" id="about" aria-labelledby="about-h">
+      <div className="split__a">
+        <p className="label">{about.label}</p>
+        <h2 className="about__lead" id="about-h" data-reveal>{about.lead}</h2>
+      </div>
+      <div className="split__b on-ox">
+        <div className="about__body">
+          {about.body.map((p, i) => <p key={i} data-reveal style={{ '--d': `${100 + i * 100}ms` }}>{p}</p>)}
+          <dl className="facts" data-reveal style={{ '--d': '300ms' }}>
+            {about.facts.map((f) => <div key={f.k}><dt>{f.k}</dt><dd>{f.v}</dd></div>)}
+          </dl>
         </div>
       </div>
     </section>
@@ -60,7 +183,7 @@ function Question({ c }) {
 
 function Rows({ title, rows }) {
   return (
-    <div className="record__block">
+    <div className="record__block" data-reveal>
       <h3>{title}</h3>
       <ul>
         {rows.map((r) => (
@@ -75,122 +198,73 @@ function Rows({ title, rows }) {
   )
 }
 
-export default function Home() {
+function Record() {
   return (
-    <>
-      <section className="sheet sheet--hero" id="top" data-sheet>
-        <div className="pin" data-pin>
-          <div className="pin__inner">
-            <h1 className="hero__title" data-hero="title"><strong>{hero.name}</strong> {hero.headline}</h1>
-            <p className="hero__who" data-hero="who">{hero.who}</p>
-            <ul className="hero__skills" data-hero="skills" aria-label="Expertise">
-              {hero.skills.map((k) => <li key={k}>{k}</li>)}
-            </ul>
-            <p className="hero__actions" data-hero="actions">
-              <Link to="#record">See my record</Link>
-            </p>
-            <p className="hero__cue" data-hero="cue">{hero.cue}</p>
-          </div>
-          <figure className="drawing drawing--podium" data-drawing>
-            <Drawing data={PODIUM} label="Line drawing of Faiz Aziz at a lectern with a laptop, speaking into a microphone" />
-            <figcaption>Speaking to clients on agentic AI.</figcaption>
-          </figure>
+    <section className="record" id="record" aria-labelledby="record-h">
+      <header className="section-head">
+        <p className="label">Record</p>
+        <h2 className="section-title" id="record-h" data-reveal>In <em>writing</em>.</h2>
+        <p className="record__actions">
+          {person.cvUrl
+            ? <a href={`${BASE}${person.cvUrl}`}>Download CV ↓</a>
+            : <button type="button" onClick={() => window.print()}>Save as PDF ↓</button>}
+        </p>
+      </header>
+      <div className="record__print-head">
+        <p className="record__print-name">{person.name}</p>
+        <p>{person.title}, {person.org}, {person.city} · {person.email}</p>
+      </div>
+      <div className="record__grid">
+        <Rows title="Experience" rows={record.experience} />
+        <Rows title="Education" rows={record.education} />
+        <Rows title="Recognition" rows={record.recognition} />
+        <Rows title="Certifications" rows={record.certifications} />
+        <div className="record__block record__block--wide" data-reveal>
+          <h3>Toolkit</h3>
+          <dl>
+            {record.toolkit.map(({ k, v }) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
         </div>
-      </section>
-
-      {questions.map((c) => <Question key={c.id} c={c} />)}
-
-      <section className="record" id="record" aria-labelledby="record-q">
-        <div className="record__inner">
-          <h2 className="q q--ink" id="record-q">{record.q}</h2>
-          <header className="record__head">
-            <p className="record__name">{person.name}</p>
-            <p className="record__summary">{record.summary}</p>
-            <p className="record__contact">
-              <a href={`mailto:${person.email}`}>{person.email}</a>
-              {person.links.slice(0, 2).map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>)}
-            </p>
-          </header>
-          <p className="record__actions">
-            {person.cvUrl
-              ? <a href={`${BASE}${person.cvUrl}`}>Download my CV</a>
-              : <button type="button" onClick={() => window.print()}>Save this as a PDF</button>}
-          </p>
-          <div className="record__grid">
-            <Rows title="Experience" rows={record.experience} />
-            <Rows title="Education" rows={record.education} />
-            <Rows title="Certifications" rows={record.certifications} />
-            <div className="record__block">
-              <h3>Toolkit</h3>
-              <dl>
-                {record.toolkit.map(({ k, v }) => (
-                  <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="sheet sheet--end" id="contact" data-sheet aria-labelledby="end-q">
-        <div className="pin" data-pin>
-          <div className="pin__inner">
-            <h2 className="q q--end" id="end-q" data-q>{ending.q}</h2>
-            <p className="end__bio" data-block={1}>{ending.bio}</p>
-            <div className="end__row" data-block={0}>
-              <a className="end__email" href={`mailto:${person.email}`}>{person.email}</a>
-              <p className="end__links">
-                {person.links.map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
-              </p>
-            </div>
-            <p className="end__colophon">{ending.colophon}</p>
-          </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }
 
-// What the director paints, read from the DOM once it's on the page. Times are
-// seconds after a sheet arrives: all writing is out within two seconds. Most
-// sheets then fill the window; a `paper` sheet keeps its colour to the writing.
-export function homeConfig() {
-  const get = (s, r = document) => r.querySelector(s)
-  const out = []
-  const h = get('#top')
-  out.push({
-    el: h, pin: get('[data-pin]', h), pigments: hero.pigments, fillAt: 1.4, fillFor: 3.2, enter: 1, fill: true,
-    blocks: [
-      { el: get('[data-hero=title]', h), at: 0.05, dur: 0.85 },
-      { el: get('[data-hero=who]', h), at: 0.5, dur: 0.6, spread: 0.7 },
-      { el: get('[data-hero=skills]', h), at: 0.7, dur: 0.5, spread: 0.6 },
-      { el: get('[data-hero=actions]', h), at: 0.85, dur: 0.5, spread: 0.6 },
-      { el: get('[data-drawing]', h), at: 0.6, dur: 2, drawing: true },
-      { el: get('[data-hero=cue]', h), at: 1.1, dur: 0.5, spread: 0.6 },
-    ],
-  })
-  questions.forEach((c) => {
-    const el = get(`#${c.id}`)
-    const blocks = [{ el: get('[data-q]', el), at: 0, dur: 0.6 }]
-    c.blocks.forEach((b, i) => blocks.push({ el: get(`[data-block="${i}"]`, el), at: 0.28 + i * 0.26, dur: 0.6, spread: 0.8 }))
-    let last = 0.28 + (c.blocks.length - 1) * 0.26 + 0.6
-    if (c.essays) {
-      el.querySelectorAll('[data-essay]').forEach((li, i) => blocks.push({ el: li, at: 0.5 + i * 0.22, dur: 0.5, spread: 0.7 }))
-      last = 1.5
-    }
-    if (c.film) blocks.push({ el: get('[data-film]', el), at: 0.4, dur: 1, drawing: true })
-    if (c.hint) blocks.push({ el: get('[data-hint]', el), at: 1.6, dur: 0.5, spread: 0.5 })
-    out.push({ el, pin: get('[data-pin]', el), pigments: c.pigments, fillAt: last - 0.2, fillFor: 2.6, fill: !c.paper, paper: !!c.paper, blocks })
-  })
-  const end = get('#contact')
-  out.push({
-    el: end, pin: get('[data-pin]', end), pigments: ending.pigments, fillAt: 0.9, fillFor: 2.8, last: true, fill: true,
-    blocks: [
-      { el: get('[data-q]', end), at: 0, dur: 0.7 },
-      { el: get('[data-block="1"]', end), at: 0.4, dur: 0.6, spread: 0.8 },
-      { el: get('[data-block="0"]', end), at: 0.6, dur: 0.6 },
-      { el: get('.end__colophon', end), at: 0.9, dur: 0.5, spread: 0.6 },
-    ],
-  })
-  return out
+function Contact() {
+  return (
+    <section className="contact" id="contact" aria-labelledby="contact-h">
+      <div className="split">
+        <div className="split__a">
+          <p className="label">Contact</p>
+          <h2 className="contact__line" id="contact-h" data-reveal>{contact.line}</h2>
+        </div>
+        <div className="split__b on-ox contact__reach">
+          <p className="contact__sub" data-reveal style={{ '--d': '120ms' }}>{contact.sub}</p>
+          <a className="contact__email" href={`mailto:${person.email}`} data-reveal style={{ '--d': '220ms' }}>{person.email}</a>
+          <p className="links" data-reveal style={{ '--d': '320ms' }}>
+            {person.links.map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label} <span aria-hidden="true">↗</span></a>)}
+          </p>
+        </div>
+      </div>
+      <footer className="foot">
+        <span>© {new Date().getFullYear()} {person.name}</span>
+        <span>{person.city}</span>
+      </footer>
+    </section>
+  )
+}
+
+export default function Home() {
+  useEffect(() => startMotion(), [])
+  return (
+    <>
+      <Hero />
+      <Belief />
+      <Work />
+      <Writing />
+      <About />
+      <Record />
+      <Contact />
+    </>
+  )
 }

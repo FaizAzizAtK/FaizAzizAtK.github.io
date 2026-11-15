@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useRoute, Link, takeRestoreY } from './router'
 import { essayBySlug } from './content/essays'
-import { person, questions } from './content/site'
-import Home, { homeConfig } from './components/Home'
-import Essay, { essayConfig } from './components/Essay'
+import { person } from './content/site'
+import Home from './components/Home'
+import Essay from './components/Essay'
 import Nav from './components/Nav'
-import WaterStage from './components/WaterStage'
 
 const HOME_TITLE = `${person.name}, AI agents for places where being wrong is expensive`
 
@@ -24,7 +23,6 @@ export default function App({ initialPath = '' }) {
   const path = useRoute(initialPath)
   const match = path.match(/^writing\/([^/]+)$/)
   const essay = match && essayBySlug(match[1])
-  const [active, setActive] = useState(0)
   const isHome = path === ''
 
   useClientEffect(() => {
@@ -40,10 +38,6 @@ export default function App({ initialPath = '' }) {
     document.title = essay ? `${essay.title}, by ${person.name}` : HOME_TITLE
   }, [essay])
 
-  // the record isn't a painted sheet, so it keeps the count at its place in the list
-  const onActive = useCallback((i) => setActive((prev) => (i === -1 ? (prev >= questions.length ? questions.length + 1 : prev) : i)), [])
-  const build = useCallback(() => (isHome ? homeConfig() : essay ? essayConfig(essay) : []), [isHome, essay])
-
   let page
   if (isHome) page = <Home />
   else if (essay) page = <Essay essay={essay} />
@@ -52,9 +46,8 @@ export default function App({ initialPath = '' }) {
   return (
     <>
       <a href="#main" className="skip">Skip to content</a>
-      <WaterStage route={path} buildConfig={build} onActive={onActive} />
-      <Nav active={isHome ? active : -1} isHome={isHome} />
-      <main id="main">{page}</main>
+      <Nav over={isHome} />
+      <main id="main" key={path}>{page}</main>
     </>
   )
 }

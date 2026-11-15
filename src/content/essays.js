@@ -2,6 +2,39 @@
 // and write a static page with its own title and preview tags per essay.
 
 const POSTS = {
+  'voice': {
+    title: 'Why Can’t I Just Talk to My Bank?',
+    date: "Nov 2026",
+    body: [
+      { type: 'lead', text: "More and more people talk to ChatGPT out loud now. On the walk to work, while cooking, in the car. Then they phone their bank and get told to press 1." },
+      { type: 'p', text: "Voice used to be the gimmick. The thing you showed someone once and never used again. That's changed. People use it to explain a letter they don't understand, rehearse a difficult conversation, plan a trip, settle an argument. They don't think of it as using AI. They think of it as asking." },
+      { type: 'p', text: "And once you've had that, almost every other conversation with a company feels like going backwards." },
+      { type: 'h2', text: "Imagine you've just moved country" },
+      { type: 'p', text: "New job, new city, and the local language isn't your first. You've got a couple of weeks to open a bank account, register your address, sort out health insurance and move your phone contract. Every one of those is a form, a phone line or a branch appointment, and every one of them is in a language you can get by in but don't think in." },
+      { type: 'p', text: "You can read the words. You just can't read them fast, and you can't tell which bits matter. Is the 'Kontoführungsgebühr' something you pay once or every month? Does this insurance form want your permit number or your social security number? You end up on hold, then in a menu, then repeating your date of birth to a third person who transfers you back to the first." },
+      { type: 'p', text: "Now picture the same fortnight with a friend who's lived there for ten years. They speak your language and theirs. They know which form matters. They come with you to the counter, explain what the clerk means, and tell you when it's fine to just sign. Same bank, same rules, same paperwork. A completely different experience." },
+      { type: 'p', text: "That friend is what a good enterprise voice agent should be." },
+      { type: 'h2', text: "The menu is the problem" },
+      { type: 'p', text: "Most companies already have voice. It's called the phone tree. Press 1 for accounts, 2 for cards, 3 for everything that isn't 1 or 2. It was designed for the company, not the caller: a way to route you to the right queue as cheaply as possible." },
+      { type: 'p', text: "A phone tree is a building where every door is numbered and nothing is signposted. You can get anywhere, as long as you already know where you're going. And the people who most need help (new arrivals, older customers, anyone stressed, anyone not fluent) are exactly the people who don't." },
+      { type: 'p', text: "A voice agent turns that around. You don't navigate the menu. You say what's going on, in your own words, in whichever language you're most comfortable in, and the menu navigates for you." },
+      { type: 'h2', text: "Sounding human is the easy part" },
+      { type: 'p', text: "Here's what gets lost in the excitement. Making an agent sound human is now the easy bit. The voices I work with through ElevenLabs are good enough that people forget they're talking to software within a sentence or two. That's exactly why everything behind the voice has to be right." },
+      { type: 'p', text: "A chatbot that gets something wrong shows you text you can reread. A voice agent that gets something wrong tells you warmly, confidently, at the speed of conversation. You don't scroll back. You just believe it. In a bank or an insurer, that's the difference between a bad experience and a formal complaint." },
+      { type: 'p', text: "So the voice agents I build on watsonx Orchestrate start from the same place as any other agent: what is it allowed to know, what is it allowed to do, and how does it know when to stop." },
+      { type: 'p', text: "Grounded: it answers from the bank's own policies and products, not from whatever the model picked up on the internet. Connected: it doesn't just explain how to update your address, it updates it, through the same systems and the same checks a member of staff would use. Bounded: it knows which requests it can close and which need a person, and it hands over with the whole conversation attached, so you never have to start again." },
+      { type: 'h2', text: "What it changes" },
+      { type: 'p', text: "Language stops being a barrier. A customer can start in English, switch to French when the detail gets tricky, and the agent follows them. Nobody has to find the one colleague who happens to speak Urdu." },
+      { type: 'p', text: "Accessibility stops being an afterthought. For someone with poor eyesight, or who finds forms hard, or who never got comfortable with apps, speaking is the most natural interface there is. For twenty years we've asked everyone to learn our interfaces. Voice is the first one that learns theirs." },
+      { type: 'p', text: "Waiting stops being the default. No hold music at eleven on a Sunday night, when you've finally found the time to deal with it." },
+      { type: 'p', text: "And for the business, every conversation is transcribed, every action is logged, and every answer can be traced back to a source. That's a far easier story to tell a compliance team than a call centre where what was said lives in someone's memory." },
+      { type: 'h2', text: "Where this goes" },
+      { type: 'p', text: "The pattern is already visible in consumer AI. First people typed to it. Then they talked to it. Next they'll expect it to do things for them. Enterprises will follow the same arc, just more slowly, because the stakes are higher. That's not a reason to wait. It's a reason to build it properly." },
+      { type: 'p', text: "The vision isn't a call centre with fewer people in it. It's a front door where anyone, in any language, at any hour, can say what they need and have it handled properly, and where the people who work there spend their time on the conversations that genuinely need a human." },
+      { type: 'p', text: "Back to that first fortnight in a new country. The paperwork doesn't get simpler. The rules don't change. What changes is that you're no longer facing them alone, in a language you don't think in, pressing 1 and hoping. You just ask." },
+      { type: 'p', text: "That's what voice should feel like. Not a gimmick. A local friend who happens to work at your bank." },
+    ],
+  },
   'agentic-shift': {
     title: "The Agentic Shift",
     date: "2025",
@@ -268,10 +301,28 @@ const POSTS = {
 const smart = (t) => t.replace(/(^|[\s(“])'/g, '$1‘').replace(/'/g, '’').replace(/(^|[\s(])"/g, '$1“').replace(/"/g, '”')
 const typeset = (body) => body.map((b) => ({ ...b, text: smart(b.text) }))
 
+// Place the essay's diagram right after the paragraph it illustrates.
+const withFigure = (e) => {
+  const i = e.body.findIndex((b) => b.text.startsWith(e.figureAfter))
+  if (i < 0) return e.body.concat({ type: 'figure', text: '' })
+  return [...e.body.slice(0, i + 1), { type: 'figure', text: '' }, ...e.body.slice(i + 1)]
+}
+
 const words = (body) => body.reduce((n, b) => n + b.text.split(/\s+/).length, 0)
 const minutes = (body) => Math.max(1, Math.round(words(body) / 230))
 
 export const ESSAYS = [
+  {
+    slug: 'why-cant-i-just-talk-to-my-bank',
+    title: 'Why Can’t I Just Talk to My Bank?',
+    date: '2026-11',
+    dateLabel: 'Nov 2026',
+    dek: "People already talk to ChatGPT every day. Enterprise agents should work the same way: you say what you need, in your own language, and it gets done.",
+    pigments: ['ultramarine', 'indigo'],
+    figure: 'voice',
+    figureAfter: "A voice agent turns that around",
+    body: typeset(POSTS['voice'].body),
+  },
   {
     slug: 'is-rag-that-simple',
     title: 'Is RAG That Simple?',
@@ -280,6 +331,7 @@ export const ESSAYS = [
     dek: 'Flat RAG searches everything and hopes. Hierarchical RAG reads the contents page first, then the chapter. Why that matters once an agent has to act on what it retrieves.',
     pigments: ['prussian', 'indigo'],
     figure: 'hrag',
+    figureAfter: "In practice: a query hits",
     body: typeset(POSTS['hrag'].body),
   },
   {
@@ -290,6 +342,7 @@ export const ESSAYS = [
     dek: 'Most teams have prompting figured out. What breaks long-running agents is the context window slowly filling with stale tool results and old reasoning.',
     pigments: ['indigo', 'payne'],
     figure: 'context',
+    figureAfter: "Not because the model changes",
     body: typeset(POSTS['prompting-interface'].body),
   },
   {
@@ -300,8 +353,9 @@ export const ESSAYS = [
     dek: 'The move from co-pilot to agent is real. What slows it down inside enterprises is trust, scope and evals, and none of that shows up in a demo.',
     pigments: ['ultramarine', 'phthalo'],
     figure: 'loop',
+    figureAfter: "The co-pilot model was the first wave",
     body: typeset(POSTS['agentic-shift'].body),
   },
-].map((e) => ({ ...e, minutes: minutes(e.body) }))
+].map((e) => ({ ...e, body: withFigure(e), minutes: minutes(e.body) }))
 
 export const essayBySlug = (slug) => ESSAYS.find((e) => e.slug === slug)

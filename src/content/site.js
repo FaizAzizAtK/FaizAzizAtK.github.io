@@ -1,7 +1,9 @@
-// Everything the home page says lives here. Edit copy in this file only.
+// Everything the site says lives here. Edit copy in this file only.
 
 export const person = {
   name: 'Faiz Aziz',
+  first: 'Faiz',
+  last: 'Aziz',
   title: 'Data & AI Delivery Consultant',
   org: 'IBM Expert Labs',
   city: 'London',
@@ -17,85 +19,93 @@ export const person = {
 
 // The first screen answers a recruiter's questions before anything else does.
 export const hero = {
-  id: 'hero',
-  pigments: ['ultramarine', 'indigo'],
-  name: 'I’m Faiz Aziz.',
-  headline: 'I build AI agents for places where being wrong is expensive.',
-  who: 'Data & AI Delivery Consultant at IBM Expert Labs in London. I lead IBM’s voice agent work with ElevenLabs, and take agentic AI from first workshop to production for banks, the public sector and many other industries.',
+  line: 'I build AI agents for places where being wrong is expensive.',
+  who: 'Data & AI Delivery Consultant at IBM Expert Labs. I lead IBM’s voice agent work with ElevenLabs, and take agentic AI from first workshop to production for banks, the public sector and many other industries.',
   skills: ['Agentic AI', 'Multi-agent systems', 'Voice agents', 'RAG', 'AI governance'],
-  cue: 'Six questions follow. About a minute.',
+  // shown above the skills: the one line of proof a recruiter should see first
+  honour: 'Selected for IBM Tech 2027',
+  honourNote: 'IBM’s recognition programme for its top technical people.',
 }
 
-// One sheet of paper per question. `pigments` are the two colours poured on it.
-// The site lives in one colour world, blues and indigo, with a single warm sheet.
-export const questions = [
+// Read word by word as it scrolls past.
+export const belief = {
+  label: 'Why it matters',
+  text: 'Normal software crashes when it’s wrong. An agent doesn’t. It gives your customer the wrong answer, confidently, in a calm voice. So my work starts where the demo ends: evals, governance, failure modes, and the person on the other end of the line.',
+}
+
+// Selected work. `figure` is the large type the chapter is remembered by.
+export const work = [
   {
-    id: 'meaning', nav: 'What does that mean?', pigments: ['prussian', 'indigo'],
-    q: 'What does that actually mean?',
-    blocks: [
-      { kind: 'statement', text: 'Normal software crashes when it’s wrong. An agent doesn’t. It gives your customer the wrong answer, confidently, in a calm voice.' },
-      { kind: 'body', text: 'So my job starts where the demo ends: evals, governance, failure modes, and the person on the other end of the line.' },
-    ],
-  },
-  {
-    id: 'now', layout: 'film', nav: 'What are you working on?', pigments: ['ultramarine', 'phthalo'],
-    q: 'What are you working on right now?',
+    id: 'voice',
+    kicker: 'Now',
+    figure: 'Voice',
+    title: 'Giving enterprise agents a voice',
+    body: 'I lead IBM’s initiative with ElevenLabs: bespoke voice agents on watsonx Orchestrate for large financial services clients, grounded in each bank’s own knowledge.',
+    photo: { src: 'img/podium-cut-800.webp', srcSet: 'img/podium-cut-500.webp 500w, img/podium-cut-800.webp 800w, img/podium-cut-1200.webp 1200w', w: 1200, h: 1536, alt: 'Faiz Aziz in a navy suit, speaking into a microphone beside a lectern' },
+    note: 'My voice demos have been shown to the CEO of IBM UK & Ireland. I also help shape which accounts we go after together, and I’m a certified ElevenLabs Partner Deploy Engineer.',
     film: {
       src: 'https://faiz-aziz-ibm.github.io/give-your-agents-a-voice/assets/voice-agents-film.mp4',
       poster: 'https://faiz-aziz-ibm.github.io/give-your-agents-a-voice/assets/film-poster.jpg',
       label: 'Film: give your agents a voice, 1 minute 54 seconds',
     },
-    blocks: [
-      { kind: 'lead', text: 'Giving agents a voice.' },
-      { kind: 'body', text: 'I lead IBM’s initiative with ElevenLabs: bespoke voice agents on watsonx Orchestrate for large financial services clients, grounded in each bank’s own knowledge.' },
-      { kind: 'note', text: 'My voice demos have been shown to the CEO of IBM UK & Ireland. I also help shape which accounts we go after together, and I’m a certified ElevenLabs Partner Deploy Engineer.' },
+  },
+  {
+    id: 'proof',
+    kicker: 'Client work',
+    figure: '2.6×',
+    count: { to: 2.6, decimals: 1, suffix: '×' },
+    title: 'A proof of concept the client paid to grow',
+    body: 'A client came back for an MVP worth 2.6 times the proof of concept I helped lead.',
+    note: 'The work: agents that apply accessibility guidelines to make a business more accessible, and an AI governance tool that makes their AI safer.',
+  },
+  {
+    id: 'speed',
+    kicker: 'Internal tooling',
+    figure: '45 min',
+    count: { to: 45, decimals: 0, suffix: ' min' },
+    title: 'Three days of front-end work, down to 45 minutes',
+    body: 'I built an internal accelerator that generates client-branded React front ends over the watsonx Orchestrate Runs API, so every proof of concept reaches a first demo sooner.',
+    note: 'Earlier, as an intern: a client prototype built in two weeks that became a paid engagement, and a transparent AI solution I helped ship that cut a client’s operating cost by 90%.',
+  },
+  {
+    id: 'spart',
+    kicker: 'Open source',
+    figure: '+112%',
+    count: { to: 112, decimals: 0, prefix: '+', suffix: '%' },
+    title: 'SPART: prompts you can measure',
+    body: 'A Python package I published on PyPI. It generates candidate prompts, scores them against your examples, and keeps the one that wins.',
+    note: 'Up 112% on syntactic similarity for data transformation. Over 80% semantic match on maths reasoning.',
+    links: [
+      { label: 'PyPI', url: 'https://pypi.org/project/spart-prompt/' },
+      { label: 'GitHub', url: 'https://github.com/FaizAzizAtK/SPART' },
     ],
   },
   {
-    // the one warm sheet, and the one that stays mostly bare paper
-    id: 'proof', layout: 'split', paper: true, nav: 'Does it hold up?', pigments: ['sienna', 'alizarin'],
-    q: 'Does it survive contact with a client?',
-    hint: 'The rest of this sheet is yours. Click or tap it.',
-    blocks: [
-      { kind: 'num', text: '2.6×' },
-      { kind: 'body', text: 'A client came back for an MVP worth 2.6 times the proof of concept I helped lead.' },
-      { kind: 'note', text: 'The work: agents that apply accessibility guidelines to make a business more accessible, and an AI governance tool that makes their AI safer.' },
-    ],
-  },
-  {
-    id: 'speed', layout: 'flip', nav: 'How fast can you move?', pigments: ['phthalo', 'prussian'],
-    q: 'How fast can you move?',
-    blocks: [
-      { kind: 'lead', text: 'Three days became 45 minutes.' },
-      { kind: 'body', text: 'I built an internal accelerator that generates client-branded React front ends over the watsonx Orchestrate Runs API, so every proof of concept reaches a first demo sooner.' },
-      { kind: 'note', text: 'Earlier, as an intern: a client prototype built in two weeks that became a paid engagement, and a transparent AI solution I helped ship that cut a client’s operating cost by 90%.' },
-    ],
-  },
-  {
-    id: 'right', nav: 'How do you know it’s right?', pigments: ['indigo', 'ultramarine'],
-    q: 'How do you know it’s right?',
-    blocks: [
-      { kind: 'lead', text: 'You measure it.' },
-      { kind: 'body', text: 'SPART is a Python package I published on PyPI. It generates candidate prompts, scores them against your examples, and keeps the one that wins.' },
-      { kind: 'note', text: 'Up 112% on syntactic similarity for data transformation. Over 80% semantic match on maths reasoning.', links: [
-        { label: 'PyPI', url: 'https://pypi.org/project/spart-prompt/' },
-        { label: 'GitHub', url: 'https://github.com/FaizAzizAtK/SPART' },
-      ] },
-    ],
-  },
-  {
-    id: 'writing', nav: 'What do you think?', pigments: ['payne', 'indigo'], essays: true,
-    q: 'What do you think about all this?',
-    blocks: [
-      { kind: 'lead', text: 'I write it down.' },
-    ],
+    id: 'lead',
+    kicker: 'Julius Bär, Zürich',
+    figure: '10+',
+    count: { to: 10, decimals: 0, suffix: '+' },
+    title: 'Leading, not just building',
+    body: 'I led a global case management project on Workday, so each HR case reaches the right team first time. I mapped the workflows, built Workday Extend apps, and kept more than ten stakeholders across regions pulling the same way.',
   },
 ]
 
+export const about = {
+  label: 'About',
+  lead: 'Grew up in Geneva. Studied in London. Building at IBM.',
+  body: [
+    'I studied Computer Science at Queen Mary University of London and finished with First Class Honours in 2025. I’ve been at IBM since, with a summer at Julius Bär in Zürich in between.',
+    'I’d rather understand a system completely, build it properly, and leave something people can depend on after I’ve left the room.',
+  ],
+  facts: [
+    { k: 'Based', v: 'London' },
+    { k: 'Speaks', v: 'English, French, Spanish, Urdu, Hindi' },
+    { k: 'Degree', v: 'BSc Computer Science, First Class' },
+    { k: 'Recognition', v: 'Selected for IBM Tech 2027' },
+  ],
+}
+
 export const record = {
-  q: 'Can I get that in writing?',
-  summary: 'Data & AI Delivery Consultant, IBM Expert Labs, London',
-  nav: 'Can I get that in writing?',
   experience: [
     { when: '2025–', what: 'IBM Expert Labs', role: 'Data & AI Delivery Consultant', where: 'London' },
     { when: '2025', what: 'Julius Bär', role: 'HR Business Technology Intern', where: 'Zürich' },
@@ -106,6 +116,10 @@ export const record = {
     { when: '2022–25', what: 'Queen Mary University of London', role: 'BSc Computer Science, First Class Honours (78.1%)', where: 'London' },
     { when: '2011–22', what: 'Institut International de Lancy', role: 'IB Diploma, 39/45, Valedictorian', where: 'Geneva' },
   ],
+  recognition: [
+    { when: '2026', what: 'IBM Tech 2027', role: 'Selected by IBM leadership for its recognition programme for top technical IBMers', where: 'Orlando' },
+    { when: '2024', what: 'IBM', role: 'Named Voice of the Interns', where: 'London' },
+  ],
   certifications: [
     { when: '2026', what: 'ElevenLabs', role: 'Partner Deploy Engineer' },
     { when: 'Dec 2025', what: 'IBM', role: 'Global Sales School' },
@@ -115,17 +129,13 @@ export const record = {
   toolkit: [
     { k: 'Agents', v: 'watsonx Orchestrate, LangGraph, LangChain, MCP, ElevenLabs' },
     { k: 'Retrieval', v: 'RAG, vector databases, Elasticsearch, embedding models' },
-    { k: 'Governance', v: 'EU AI Act alignment, evals, auditability, OAuth on-behalf-of flows' },
+    { k: 'Governance', v: 'EU AI Act alignment, evals, auditability, observability, guardrails' },
     { k: 'Build', v: 'Python, TypeScript, React, Next.js, SQL, Docker' },
     { k: 'Delivery', v: 'Pre-sales, design thinking, workshops, executive briefings' },
-    { k: 'Languages', v: 'English and French fluent. Spanish, Urdu and Hindi conversational.' },
   ],
 }
 
-export const ending = {
-  id: 'end',
-  pigments: ['ultramarine', 'indigo'],
-  q: 'Is there anything else I can help you with?',
-  bio: 'I’m Faiz. I grew up in Geneva, studied Computer Science at Queen Mary in London, and have been at IBM since. I’d rather understand a system completely, build it properly, and leave something people can depend on after I’ve left the room.',
-  colophon: 'The colour on this page isn’t an image. It’s pigment and water, simulated live on your device. Stir it, or click to add more.',
+export const contact = {
+  line: 'Let’s talk about agents that hold up.',
+  sub: 'Agentic AI, voice agents, or getting AI past the demo. I read everything.',
 }

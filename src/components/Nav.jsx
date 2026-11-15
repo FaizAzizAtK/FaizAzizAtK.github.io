@@ -1,50 +1,35 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from '../router'
-import { person, questions, record } from '../content/site'
+import { person } from '../content/site'
 
-// Scraps of paper, so they stay legible on any colour underneath. Record and
-// Contact are always one click away for anyone who doesn't want the tour.
-export default function Nav({ active, isHome }) {
-  const [open, setOpen] = useState(false)
-  const panel = useRef(null)
+const linkedin = person.links.find((l) => l.label === 'LinkedIn')
+const LINKS = [['Work', '#work'], ['Writing', '#writing'], ['Record', '#record'], ['Contact', '#contact']]
 
+export default function Nav({ over = false }) {
+  const [solid, setSolid] = useState(false)
   useEffect(() => {
-    if (!open) return undefined
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
-    const onDown = (e) => { if (!panel.current?.parentElement.contains(e.target)) setOpen(false) }
-    window.addEventListener('keydown', onKey)
-    window.addEventListener('pointerdown', onDown)
-    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('pointerdown', onDown) }
-  }, [open])
-
-  const list = [...questions.map((q) => ({ id: q.id, nav: q.nav })), { id: 'record', nav: record.nav }]
-  const n = Math.min(Math.max(active, 0), list.length)
+    const on = () => setSolid(window.scrollY > 40)
+    on()
+    addEventListener('scroll', on, { passive: true })
+    return () => removeEventListener('scroll', on)
+  }, [])
 
   return (
-    <header className="nav">
-      <Link to="" className="tag tag--name" aria-label={`${person.name}, back to the start`}>{person.name}</Link>
-      <div className="nav__right">
-        <Link to="#record" className="tag">Record</Link>
-        <Link to="#contact" className="tag tag--contact">Contact</Link>
-        <button type="button" className="tag" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="nav-panel">
-          {isHome && n > 0 ? <span className="tag__n">{n} of {list.length}</span> : null}
-          <span>{open ? 'Close' : 'Questions'}</span>
-        </button>
-        {open && (
-          <nav className="panel" id="nav-panel" ref={panel} aria-label="Questions">
-            <ol>
-              {list.map((q, i) => (
-                <li key={q.id}>
-                  <Link to={`#${q.id}`} onClick={() => setOpen(false)}>{q.nav}</Link>
-                </li>
-              ))}
-            </ol>
-            <p className="panel__links">
-              {person.links.slice(0, 2).map((l) => <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}
-            </p>
-          </nav>
-        )}
-      </div>
+    <header className={`nav${solid ? ' nav--solid' : over ? ' nav--over' : ''}`}>
+      <Link to="" className="nav__name" aria-label={`${person.name}, back to the top`}>{person.name}</Link>
+      <p className="nav__now"><span>Currently</span>{person.title}, {person.org}</p>
+      <nav aria-label="Sections">
+        <ul className="nav__links">
+          {LINKS.map(([l, to]) => <li key={l} className={`nav__l--${l.toLowerCase()}`}><Link to={to}>{l}</Link></li>)}
+          <li className="nav__l--linkedin">
+            <a href={linkedin.url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in a new tab)" className="nav__icon">
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </header>
   )
 }
