@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // A tiny History API router. Paths are relative to Vite's base, so the same
-// build works at / (Vercel) and /portfolio/ (GitHub Pages).
+// build works at any base path (the site is served from /).
 const BASE = import.meta.env.BASE_URL
 
 export const href = (path = '') => BASE + path.replace(/^\//, '')

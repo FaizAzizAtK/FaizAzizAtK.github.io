@@ -4,14 +4,15 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ESSAYS } from './src/content/essays.js'
 
-const base = process.env.VERCEL ? '/' : '/portfolio/'
+// The site lives at the root of faizazizatk.github.io (and of Vercel).
+const base = process.env.BASE_PATH || '/'
 
 // Absolute site URL for canonical links and preview images.
 const SITE_URL = (
   process.env.SITE_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'https://faizazizatk.github.io/portfolio')
+    : 'https://faizazizatk.github.io')
 ).replace(/\/$/, '')
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
